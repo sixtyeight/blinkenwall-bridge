@@ -1,0 +1,15 @@
+[Unit]
+# this file should be in:
+# /etc/systemd/system/blinkenbridge.service
+
+Description=Blinkenbridge
+After=network-online.target
+
+[Service]
+User=pi
+ExecStart=/home/pi/blinkenbridge.jar --server-port=9000
+SuccessExitStatus=143
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
