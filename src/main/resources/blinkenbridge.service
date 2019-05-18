@@ -7,7 +7,7 @@ After=network-online.target
 
 [Service]
 User=pi
-ExecStart=/home/pi/blinkenbridge.jar --server-port=9000
+ExecStart=/home/pi/blinkenbridge.jar --server.port=9000
 SuccessExitStatus=143
 Restart=on-failure
 
