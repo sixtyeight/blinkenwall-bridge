@@ -1,6 +1,5 @@
 [Unit]
-# this file should be in:
-# /etc/systemd/system/blinkenbridge.service
+# this file should be in: /etc/systemd/system
 
 Description=Blinkenbridge
 After=network-online.target

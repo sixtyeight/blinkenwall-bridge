@@ -14,6 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
@@ -29,7 +31,7 @@ public class Blinkenbridge {
 		SpringApplication.run(Blinkenbridge.class, args);
 	}
 
-	@GetMapping()
+	@GetMapping(path = "/api/turnoff")
 	public ResponseEntity<String> turnOff() {
 		try {
 			LOG.info("entered turnOff()");
@@ -47,7 +49,26 @@ public class Blinkenbridge {
 			return ResponseEntity.status(500).body(e.getMessage());
 		}
 
-		return ResponseEntity.ok("ok");
+		return ResponseEntity.accepted().body("ok");
+	}
+
+	@PostMapping(path = "/api/passthrough", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<String> passthrough(@RequestBody String message) {
+		try {
+			LOG.info("entered passthrough()");
+			LOG.info("sending message: " + message);
+			getClient().send(message);
+		} catch (URISyntaxException e) {
+			// can't happen
+		} catch (InterruptedException e) {
+			LOG.error("passthrough failed: {}", e);
+			return ResponseEntity.status(503).body("{ \"error\": \"connection to blinkenwall websocket failed\"}");
+		} catch (Exception e) {
+			LOG.error("passthrough failed: {}", e);
+			return ResponseEntity.status(500).body("{ \"error\": \"internal error\"}");
+		}
+
+		return ResponseEntity.accepted().body("{}");
 	}
 
 	private String uuid() {
